@@ -47,7 +47,7 @@ const rowsOfCustomers: TDataStructure[] = [
 ]
 
 function App() {
-    const [view, setView] = useState<"Afdelinger" | "Kunder">("Afdelinger")
+    const [view, setView] = useState<"Afdelinger" | "Aarhus">("Aarhus")
 
     const rowsOfAfdelinger: TDataStructure[] = [
         {
@@ -111,4 +111,7 @@ function App() {
 }
 
 export default App
+
+
+
 
