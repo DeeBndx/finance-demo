@@ -8,7 +8,13 @@ import { TDataStructure } from "App"
 import * as _ from "lodash"
 import { formatValue } from "model"
 
-export const Graph = (props: { afdelinger: TDataStructure[] }) => {
+type GraphProps = {
+    afdelinger: TDataStructure[]
+    view: "Afdelinger" | "Aarhus" | "Aalborg" | "København" | "Esbjerg" | "Odense"
+    setView: React.Dispatch<React.SetStateAction<"Afdelinger" | "Aarhus" | "Aalborg" | "København" | "Esbjerg" | "Odense">>
+}
+
+export const Graph = (props: GraphProps) => {
     const [highlightedItem, setHighLightedItem] = React.useState<HighlightItemData | null>(null)
 
     const itemObjectForBarChart = props.afdelinger.map(value => [value.area, [...value.sustainableArea].pop()])
@@ -76,20 +82,29 @@ export const Graph = (props: { afdelinger: TDataStructure[] }) => {
     }
 
     return (
-            <Stack py={2} width={"100%"} justifyContent="space-between" direction={{ xs: "column", md: "row" }} spacing={1} sx={{ width: "100%" }}>
-                <Box flexGrow={1}>
-                    <Paper>
+        <Stack
+            py={2}
+            width={"100%"}
+            justifyContent="space-between"
+            direction={{ xs: "column", md: "row" }}
+            spacing={1}
+            sx={{ width: "100%" }}
+        >
+            <Box flexGrow={1}>
+                <Paper>
                     <Box>
                         <Typography variant="h6" ml={"80px"}>
-                            Top 10 areal samt andel bæredygtigt aktiv
+                            {props.view == "Afdelinger"
+                                ? "Afdelingers areal samt andel bæredygtigt aktiv"
+                                : "Top 10 areal samt andel bæredygtigt aktiv"}
                         </Typography>
 
                         <BarChart {...barChartsProps} highlightedItem={highlightedItem} onHighlightChange={setHighLightedItem} />
                     </Box>
                 </Paper>
-                </Box>
-                <Box flexGrow={1}>
-                    <Paper>
+            </Box>
+            <Box flexGrow={1}>
+                <Paper>
                     <Box>
                         <Typography variant="h6" ml={"80px"}>
                             Top 10 areal andel bære dygtigt aktiv historik
@@ -98,7 +113,7 @@ export const Graph = (props: { afdelinger: TDataStructure[] }) => {
                         <LineChart {...lineChartProps} highlightedItem={highlightedItem} onHighlightChange={setHighLightedItem} />
                     </Box>
                 </Paper>
-                </Box>
-            </Stack>
+            </Box>
+        </Stack>
     )
 }

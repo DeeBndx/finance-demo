@@ -6,7 +6,13 @@ import { formatValue, getPercentage } from "model"
 
 const paginationModel = { page: 0, pageSize: 15 }
 
-export const TableComponent = (props: { afdelinger: TDataStructure[] }) => {
+type TableComponentProps = {
+    afdelinger: TDataStructure[]
+    view: "Afdelinger" | "Aarhus" | "Aalborg" | "København" | "Esbjerg" | "Odense"
+    setView: React.Dispatch<React.SetStateAction<"Afdelinger" | "Aarhus" | "Aalborg" | "København" | "Esbjerg" | "Odense">>
+}
+
+export const TableComponent = (props: TableComponentProps) => {
     const columns: GridColDef[] = [
         { field: "id", headerName: "ID", width: 70 },
         { field: "name", headerName: "Navn", width: 240 },
