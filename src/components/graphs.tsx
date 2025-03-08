@@ -6,7 +6,7 @@ import { BarChart, BarChartProps } from "@mui/x-charts/BarChart"
 import { HighlightItemData } from "@mui/x-charts/context"
 import { TDataStructure } from "App"
 import * as _ from "lodash"
-import { formatValue, ViewType } from "model"
+import { formatValue, getPercentage, ViewType } from "model"
 
 type GraphProps = {
     afdelinger: TDataStructure[]
@@ -20,17 +20,31 @@ export const Graph = (props: GraphProps) => {
     const itemObjectForBarChart = props.afdelinger.map(value => [value.area, [...value.sustainableArea].pop()])
 
     const orderdArraysForBarChart = _.zip(...itemObjectForBarChart)
+    console.log("🚀 ~ Graph ~ orderdArraysForBarChart:", orderdArraysForBarChart)
 
     const colors = ["#3A67AB", "#FFA400", "#DB2955", "#EA7AF4", "#3caf66", "#52489c", "#f6c62c", "#f529c7", "#18052e"]
 
     const barChartsProps: BarChartProps = {
         series: (orderdArraysForBarChart as number[][]).map((x, index) => {
-            return {
-                data: x,
-                label: index == 0 ? "Total m²" : "Bæredygtige m²",
-                id: x.toString().replace(",", ""),
-                highlightScope: { highlight: "item", fade: "global" },
+            if (index == 0) {
+                return {
+                    yAxisId: "areaId",
+                    data: x,
+                    label: "Total m²",
+                    id: x.toString().replace(",", ""),
+                    highlightScope: { highlight: "item", fade: "global" },
+                }
             }
+            if (index == 1) {
+                return {
+                    yAxisId: "percentageId",
+                    data: x.map((d, dIndex) => getPercentage(d, orderdArraysForBarChart[0][dIndex] as number)),
+                    label: "Bæredygtige %",
+                    id: x.toString().replace(",", ""),
+                    highlightScope: { highlight: "item", fade: "global" },
+                }
+            }
+            return {}
         }),
         xAxis: [
             {
@@ -43,10 +57,11 @@ export const Graph = (props: GraphProps) => {
             },
         ],
         yAxis: [
-            {
-                valueFormatter: (value: number) => formatValue(value),
-            },
+            { id: "areaId", scaleType: "linear", valueFormatter: (value: number) => formatValue(value) },
+            { id: "percentageId", scaleType: "linear", data: [10, 20] },
         ],
+        leftAxis: "areaId",
+        rightAxis: "percentageId",
         height: 400,
         margin: { left: 80 },
         slotProps: {
@@ -103,9 +118,6 @@ export const Graph = (props: GraphProps) => {
                             {...barChartsProps}
                             highlightedItem={highlightedItem}
                             onHighlightChange={setHighLightedItem}
-                            // onItemClick={(_, barItemId) => {
-                            //     console.log("🚀 ~ Graph ~ barItemId:", barItemId)
-                            // }}
                             onAxisClick={(_, data) => {
                                 console.log("🚀 ~ Graph ~ data:", data)
 
