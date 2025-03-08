@@ -93,7 +93,7 @@ export const Graph = (props: GraphProps) => {
             <Box flexGrow={1}>
                 <Paper>
                     <Box>
-                        <Typography variant="h6" ml={"80px"}>
+                        <Typography variant="h6" textAlign="center">
                             {props.view == "Afdelinger"
                                 ? "Afdelingers areal samt andel bæredygtigt aktiv"
                                 : "Top 10 areal samt andel bæredygtigt aktiv"}
@@ -106,8 +106,10 @@ export const Graph = (props: GraphProps) => {
             <Box flexGrow={1}>
                 <Paper>
                     <Box>
-                        <Typography variant="h6" ml={"80px"}>
-                            Top 10 areal andel bære dygtigt aktiv historik
+                        <Typography variant="h6" textAlign="center">
+                            {props.view == "Afdelinger"
+                                ? "Afdelingers andel bæredygtigt aktiv historik"
+                                : "Top 10 areal andel bæredygtigt aktiv historik"}
                         </Typography>
 
                         <LineChart {...lineChartProps} highlightedItem={highlightedItem} onHighlightChange={setHighLightedItem} />

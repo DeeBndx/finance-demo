@@ -1,8 +1,10 @@
 import { useState } from "react"
-import { Box, Divider, Stack, Typography } from "@mui/material"
+import { ArrowBack } from "@mui/icons-material"
+import { Box, Divider, IconButton, Stack, Typography } from "@mui/material"
 import logoSvg from "assets/svg-logo.svg"
 import { Graph } from "components/graphs"
 import { TableComponent } from "components/table-component"
+import { AnimatePresence, motion } from "motion/react"
 
 export type TDataStructure = {
     id: number | string
@@ -312,9 +314,35 @@ export const App = () => {
     return (
         <Box>
             <Stack direction="row" alignItems="center" justifyContent="space-between" p={2} mb={1} bgcolor={"#3345AE"}>
-                <Typography variant="h4" color="white" onClick={() => handleViewChange("Aarhus")}>
-                    {view}
-                </Typography>
+                <Stack direction="row" flexGrow={1} justifyContent="start">
+                    <AnimatePresence>
+                        {view != "Afdelinger" && (
+                            <motion.div
+                                style={{ color: "white", overflow: "hidden" }}
+                                initial={{ scale: 0.2, opacity: 0, width: 0, marginRight: 0 }}
+                                animate={{ scale: 1, opacity: 1, width: "fit-content", marginRight: 8 }}
+                                exit={{ scale: 0.2, opacity: 0, width: 0, marginRight: 0 }}
+                            >
+                                <IconButton onClick={() => handleViewChange("Afdelinger")} color="inherit">
+                                    <ArrowBack />
+                                </IconButton>
+                            </motion.div>
+                        )}
+                    </AnimatePresence>
+                    <AnimatePresence mode="wait">
+                        <motion.div
+                            key={view}
+                            style={{ color: "white", overflowY: "hidden", overflowX: "visible" }}
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                        >
+                            <Typography variant="h4" color="white" onClick={() => handleViewChange("Aarhus")}>
+                                {view}
+                            </Typography>
+                        </motion.div>
+                    </AnimatePresence>
+                </Stack>
                 <Box>
                     <img src={logoSvg} />
                 </Box>
@@ -326,38 +354,5 @@ export const App = () => {
         </Box>
     )
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
