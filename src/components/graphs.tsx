@@ -58,7 +58,7 @@ export const Graph = (props: GraphProps) => {
         ],
         yAxis: [
             { id: "areaId", scaleType: "linear", valueFormatter: (value: number) => formatValue(value) },
-            { id: "percentageId", scaleType: "linear", data: [10, 20] },
+            { id: "percentageId", valueFormatter: (value: number) => `${value} %` },
         ],
         leftAxis: "areaId",
         rightAxis: "percentageId",
@@ -74,11 +74,11 @@ export const Graph = (props: GraphProps) => {
     const itemObjectForLineChart = props.afdelinger.map(value => value.sustainableArea)
 
     const lineChartProps: LineChartProps = {
-        margin: { left: 80 },
-        series: itemObjectForLineChart.map(x => ({
-            data: x,
+        series: itemObjectForLineChart.map((x, xIndex) => ({
+            data: x.map(d => getPercentage(d as number, props.afdelinger[xIndex].area)),
             id: x.toString().replace(",", ""),
             highlightScope: { highlight: "series", fade: "global" },
+            valueFormatter: value => `${formatValue(value as number)} %`,
         })),
         colors: colors,
         height: 400,
@@ -94,6 +94,7 @@ export const Graph = (props: GraphProps) => {
                 valueFormatter: value => value.toString().replace(",", ""),
             },
         ],
+        yAxis: [{ valueFormatter: value => `${value} %` }],
     }
 
     return (
@@ -118,11 +119,10 @@ export const Graph = (props: GraphProps) => {
                             {...barChartsProps}
                             highlightedItem={highlightedItem}
                             onHighlightChange={setHighLightedItem}
-                            onAxisClick={(_, data) => {
-                                console.log("🚀 ~ Graph ~ data:", data)
-
-                                props.setView(data?.axisValue as ViewType)
+                            grid={{
+                                horizontal: true,
                             }}
+                            onAxisClick={(_, data) => props.setView(data?.axisValue as ViewType)}
                         />
                     </Box>
                 </Paper>
