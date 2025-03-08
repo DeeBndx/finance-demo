@@ -6,12 +6,12 @@ import { BarChart, BarChartProps } from "@mui/x-charts/BarChart"
 import { HighlightItemData } from "@mui/x-charts/context"
 import { TDataStructure } from "App"
 import * as _ from "lodash"
-import { formatValue } from "model"
+import { formatValue, ViewType } from "model"
 
 type GraphProps = {
     afdelinger: TDataStructure[]
-    view: "Afdelinger" | "Aarhus" | "Aalborg" | "København" | "Esbjerg" | "Odense"
-    setView: React.Dispatch<React.SetStateAction<"Afdelinger" | "Aarhus" | "Aalborg" | "København" | "Esbjerg" | "Odense">>
+    view: ViewType
+    setView: (view: ViewType) => void
 }
 
 export const Graph = (props: GraphProps) => {
@@ -21,7 +21,7 @@ export const Graph = (props: GraphProps) => {
 
     const orderdArraysForBarChart = _.zip(...itemObjectForBarChart)
 
-    const colors = ["#3A67AB", "#FFA400", "#DB2955", "#EA7AF4", "#3caf66"]
+    const colors = ["#3A67AB", "#FFA400", "#DB2955", "#EA7AF4", "#3caf66", "#52489c", "#f6c62c", "#f529c7", "#18052e"]
 
     const barChartsProps: BarChartProps = {
         series: (orderdArraysForBarChart as number[][]).map((x, index) => {
@@ -99,7 +99,19 @@ export const Graph = (props: GraphProps) => {
                                 : "Top 10 areal samt andel bæredygtigt aktiv"}
                         </Typography>
 
-                        <BarChart {...barChartsProps} highlightedItem={highlightedItem} onHighlightChange={setHighLightedItem} />
+                        <BarChart
+                            {...barChartsProps}
+                            highlightedItem={highlightedItem}
+                            onHighlightChange={setHighLightedItem}
+                            // onItemClick={(_, barItemId) => {
+                            //     console.log("🚀 ~ Graph ~ barItemId:", barItemId)
+                            // }}
+                            onAxisClick={(_, data) => {
+                                console.log("🚀 ~ Graph ~ data:", data)
+
+                                props.setView(data?.axisValue as ViewType)
+                            }}
+                        />
                     </Box>
                 </Paper>
             </Box>

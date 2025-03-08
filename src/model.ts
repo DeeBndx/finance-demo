@@ -4,4 +4,6 @@ export const formatValue = (value: number): string =>
         maximumFractionDigits: 0,
     }).format(value)
 
-export const getPercentage = (percentageNumber: number, total: number) => percentageNumber / total * 100
+export const getPercentage = (percentageNumber: number, total: number) => (percentageNumber / total) * 100
+
+export type ViewType = "Afdelinger" | "Aarhus" | "Aalborg" | "København" | "Esbjerg" | "Odense"

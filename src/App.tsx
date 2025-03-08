@@ -1,6 +1,6 @@
 import { useState } from "react"
 import { ArrowBack } from "@mui/icons-material"
-import { Box, Divider, IconButton, Stack, Typography } from "@mui/material"
+import { Box, Divider, IconButton, Stack, Tooltip, Typography } from "@mui/material"
 import logoSvg from "assets/svg-logo.svg"
 import { Graph } from "components/graphs"
 import { TableComponent } from "components/table-component"
@@ -152,7 +152,7 @@ const rowsOfCustomers: CustomerType[] = [
         name: "Skyline Asset Management",
         numberOfBuildings: 92,
         area: 121624,
-        sustainableArea: [37338.568],
+        sustainableArea: [7338, 27338, 37338.568],
     },
     {
         id: 18,
@@ -170,7 +170,14 @@ const rowsOfCustomers: CustomerType[] = [
         area: 185156,
         sustainableArea: [628, 2628, 9628.11],
     },
-    { id: 20, department: "København", name: "TopFloor Estates", numberOfBuildings: 38, area: 91124, sustainableArea: [27337.2] },
+    {
+        id: 20,
+        department: "København",
+        name: "TopFloor Estates",
+        numberOfBuildings: 38,
+        area: 91124,
+        sustainableArea: [7337, 17337, 27337.2],
+    },
     {
         id: 21,
         department: "Esbjerg",
@@ -193,7 +200,7 @@ const rowsOfCustomers: CustomerType[] = [
         name: "Sterling Real Estate",
         numberOfBuildings: 102,
         area: 137190,
-        sustainableArea: [14267.76],
+        sustainableArea: [4267, 7267, 14267.76],
     },
     {
         id: 24,
@@ -323,9 +330,11 @@ export const App = () => {
                                 animate={{ scale: 1, opacity: 1, width: "fit-content", marginRight: 8 }}
                                 exit={{ scale: 0.2, opacity: 0, width: 0, marginRight: 0 }}
                             >
-                                <IconButton onClick={() => handleViewChange("Afdelinger")} color="inherit">
-                                    <ArrowBack />
-                                </IconButton>
+                                <Tooltip title="Gå til Afdelinger">
+                                    <IconButton onClick={() => handleViewChange("Afdelinger")} color="inherit">
+                                        <ArrowBack />
+                                    </IconButton>
+                                </Tooltip>
                             </motion.div>
                         )}
                     </AnimatePresence>
@@ -348,11 +357,16 @@ export const App = () => {
                 </Box>
             </Stack>
             <Stack direction="column" gap={2} p={2} divider={<Divider />}>
-                <Graph afdelinger={data} view={view} setView={setView} />
-                <TableComponent afdelinger={data} view={view} setView={setView} />
+                <Graph afdelinger={data} view={view} setView={view => handleViewChange(view)} />
+                <TableComponent afdelinger={data} view={view} setView={view => handleViewChange(view)} />
             </Stack>
         </Box>
     )
 }
+
+
+
+
+
 
 

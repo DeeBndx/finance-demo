@@ -2,14 +2,14 @@ import { Divider } from "@mui/material"
 import Paper from "@mui/material/Paper"
 import { DataGrid, GridColDef } from "@mui/x-data-grid"
 import { TDataStructure } from "App"
-import { formatValue, getPercentage } from "model"
+import { formatValue, getPercentage, ViewType } from "model"
 
 const paginationModel = { page: 0, pageSize: 15 }
 
 type TableComponentProps = {
     afdelinger: TDataStructure[]
-    view: "Afdelinger" | "Aarhus" | "Aalborg" | "København" | "Esbjerg" | "Odense"
-    setView: React.Dispatch<React.SetStateAction<"Afdelinger" | "Aarhus" | "Aalborg" | "København" | "Esbjerg" | "Odense">>
+    view: ViewType
+    setView: (view: ViewType) => void
 }
 
 export const TableComponent = (props: TableComponentProps) => {
@@ -28,7 +28,6 @@ export const TableComponent = (props: TableComponentProps) => {
         {
             field: "sustainablePercentage",
             headerName: "Procentdel bæredygtig",
-            sortable: false,
             width: 168,
             align: "right",
             valueFormatter: value =>
@@ -61,7 +60,9 @@ export const TableComponent = (props: TableComponentProps) => {
                 columns={columns}
                 initialState={{ pagination: { paginationModel } }}
                 pageSizeOptions={[15, 30]}
+                onRowClick={params => props.setView((params.row as TDataStructure).name as ViewType)}
                 checkboxSelection
+                disableRowSelectionOnClick
                 sx={{ border: 0 }}
             />
         </Paper>
