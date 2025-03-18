@@ -1,7 +1,23 @@
 import { useState } from "react"
-import { ArrowBack } from "@mui/icons-material"
-import { Box, Divider, IconButton, Stack, Tooltip, Typography } from "@mui/material"
-import logoSvg from "assets/svg-logo.svg"
+import { ArrowBack, Inbox, Mail } from "@mui/icons-material"
+import {
+    AppBar,
+    Box,
+    Divider,
+    Drawer,
+    IconButton,
+    List,
+    ListItem,
+    ListItemButton,
+    ListItemIcon,
+    ListItemText,
+    Stack,
+    Toolbar,
+    Tooltip,
+    Typography,
+} from "@mui/material"
+import logoSvg from "assets/nordea.svg"
+// import logoSvg from "assets/svg-logo.svg"
 import { Graph } from "components/graphs"
 import { TableComponent } from "components/table-component"
 import { AnimatePresence, motion } from "motion/react"
@@ -303,6 +319,8 @@ const rowsOfDepartments: TDataStructure[] = [
     },
 ]
 
+const drawerWidth = 240
+
 export const App = () => {
     const [view, setView] = useState<"Afdelinger" | "Aarhus" | "Aalborg" | "København" | "Esbjerg" | "Odense">("Afdelinger")
     const [data, setData] = useState<TDataStructure[] | CustomerType[]>(rowsOfDepartments)
@@ -319,50 +337,153 @@ export const App = () => {
     }
 
     return (
-        <Box>
-            <Stack direction="row" alignItems="center" justifyContent="space-between" p={2} mb={1} bgcolor={"#3345AE"}>
-                <Stack direction="row" flexGrow={1} justifyContent="start">
-                    <AnimatePresence>
-                        {view != "Afdelinger" && (
-                            <motion.div
-                                style={{ color: "white", overflow: "hidden" }}
-                                initial={{ scale: 0.2, opacity: 0, width: 0, marginRight: 0 }}
-                                animate={{ scale: 1, opacity: 1, width: "fit-content", marginRight: 8 }}
-                                exit={{ scale: 0.2, opacity: 0, width: 0, marginRight: 0 }}
-                            >
-                                <Tooltip title="Gå til Afdelinger">
-                                    <IconButton onClick={() => handleViewChange("Afdelinger")} color="inherit">
-                                        <ArrowBack />
-                                    </IconButton>
-                                </Tooltip>
-                            </motion.div>
-                        )}
-                    </AnimatePresence>
-                    <AnimatePresence mode="wait">
-                        <motion.div
-                            key={view}
-                            style={{ color: "white", overflowY: "hidden", overflowX: "visible" }}
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            exit={{ opacity: 0 }}
-                        >
-                            <Typography variant="h4" color="white" onClick={() => handleViewChange("Aarhus")}>
-                                {view}
-                            </Typography>
-                        </motion.div>
-                    </AnimatePresence>
-                </Stack>
-                <Box>
-                    <img src={logoSvg} />
+        <Box sx={{ display: "flex" }}>
+            <AppBar position="fixed" sx={{ zIndex: theme => theme.zIndex.drawer + 1, bgcolor: "#00005e" }}>
+                <Toolbar>
+                    <Stack direction="row" flexGrow={1} alignItems="center" justifyContent="space-between">
+                        <Stack direction="row" alignItems="center">
+                            <AnimatePresence>
+                                {view != "Afdelinger" && (
+                                    <motion.div
+                                        style={{ color: "white", overflow: "hidden" }}
+                                        initial={{ scale: 0.2, opacity: 0, width: 0, marginRight: 0 }}
+                                        animate={{ scale: 1, opacity: 1, width: "fit-content", marginRight: 8 }}
+                                        exit={{ scale: 0.2, opacity: 0, width: 0, marginRight: 0 }}
+                                    >
+                                        <Tooltip title="Gå til Afdelinger">
+                                            <IconButton onClick={() => handleViewChange("Afdelinger")} color="inherit">
+                                                <ArrowBack />
+                                            </IconButton>
+                                        </Tooltip>
+                                    </motion.div>
+                                )}
+                            </AnimatePresence>
+                            <AnimatePresence mode="wait">
+                                <motion.div
+                                    key={view}
+                                    style={{ color: "white", overflowY: "hidden", overflowX: "visible" }}
+                                    initial={{ opacity: 0 }}
+                                    animate={{ opacity: 1 }}
+                                    exit={{ opacity: 0 }}
+                                >
+                                    <Typography variant="h4" color="white" onClick={() => handleViewChange("Aarhus")}>
+                                        {view}
+                                    </Typography>
+                                </motion.div>
+                            </AnimatePresence>
+                        </Stack>
+                        <Stack direction="row" alignItems="center" justifyContent="center" p={2} mb={1}>
+                            <Box>
+                                <img src={logoSvg} />
+                            </Box>
+                        </Stack>
+                    </Stack>
+                </Toolbar>
+            </AppBar>
+
+            {/* <Drawer
+                variant="permanent"
+                sx={{
+                    width: drawerWidth,
+                    flexShrink: 0,
+                    [`& .MuiDrawer-paper`]: { width: drawerWidth, boxSizing: "border-box" },
+                }}
+            >
+                <Toolbar />
+                <Stack direction="row" alignItems="center" justifyContent="center" p={2} mb={1} bgcolor={"#3345AE"}>
+                    <Box>
+                        <img src={logoSvg} />
+                    </Box>
+                </Stack> 
+
+                <Box sx={{ overflow: "auto" }}>
+                    <List>
+                        <ListItem disablePadding>
+                            <ListItemButton>
+                                <ListItemIcon>
+                                    <Dashboard />
+                                </ListItemIcon>
+                                <ListItemText primary={"Dashboard"} />
+                            </ListItemButton>
+                        </ListItem>
+                    </List>
+                    <Divider />
+                    <List>
+                        {["All mail", "Trash", "Spam"].map((text, index) => (
+                            <ListItem key={text} disablePadding>
+                                <ListItemButton>
+                                    <ListItemIcon>{index % 2 === 0 ? <Inbox /> : <Mail />}</ListItemIcon>
+                                    <ListItemText primary={text} />
+                                </ListItemButton>
+                            </ListItem>
+                        ))}
+                    </List>
                 </Box>
-            </Stack>
-            <Stack direction="column" gap={2} p={2} divider={<Divider />}>
-                <Graph afdelinger={data} view={view} setView={view => handleViewChange(view)} />
-                <TableComponent afdelinger={data} view={view} setView={view => handleViewChange(view)} />
-            </Stack>
+            </Drawer>*/}
+            <Box component="main" sx={{ flexGrow: 1 }}>
+                <Toolbar />
+
+                <Box>
+                    <Stack direction="column" gap={2} p={2} divider={<Divider />}>
+                        <Graph afdelinger={data} view={view} setView={view => handleViewChange(view)} />
+                        <TableComponent afdelinger={data} view={view} setView={view => handleViewChange(view)} />
+                    </Stack>
+                </Box>
+            </Box>
+        </Box>
+    )
+
+    return (
+        <Box>
+            <Drawer
+                sx={{
+                    width: 220,
+                    flexShrink: 0,
+                    "& .MuiDrawer-paper": {
+                        width: 220,
+                        boxSizing: "border-box",
+                    },
+                }}
+                variant="permanent"
+                anchor="left"
+            >
+                <List>
+                    {["All mail", "Trash", "Spam"].map((text, index) => (
+                        <ListItem key={text} disablePadding>
+                            <ListItemButton>
+                                <ListItemIcon>{index % 2 === 0 ? <Inbox /> : <Mail />}</ListItemIcon>
+                                <ListItemText primary={text} />
+                            </ListItemButton>
+                        </ListItem>
+                    ))}
+                </List>
+            </Drawer>
+
+            <Box
+                sx={{
+                    // width: "calc(100% - 220px)",
+                    pl: "220px",
+                }}
+            ></Box>
         </Box>
     )
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
