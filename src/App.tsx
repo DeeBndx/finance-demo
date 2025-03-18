@@ -16,8 +16,8 @@ import {
     Tooltip,
     Typography,
 } from "@mui/material"
-import logoSvg from "assets/nordea.svg"
-// import logoSvg from "assets/svg-logo.svg"
+import nordeaLogoSvg from "assets/nordea.svg"
+import nykreditLogoSvg from "assets/svg-logo.svg"
 import { Graph } from "components/graphs"
 import { TableComponent } from "components/table-component"
 import { AnimatePresence, motion } from "motion/react"
@@ -325,6 +325,17 @@ export const App = () => {
     const [view, setView] = useState<"Afdelinger" | "Aarhus" | "Aalborg" | "København" | "Esbjerg" | "Odense">("Afdelinger")
     const [data, setData] = useState<TDataStructure[] | CustomerType[]>(rowsOfDepartments)
 
+    const url = window.location.href
+
+    const getBrandColor = () => {
+        if (url.includes("nordea")) return "#00005e"
+        if (url.includes("nykredit")) return "#3345AE"
+    }
+    const getBrandLogo = () => {
+        if (url.includes("nordea")) return nordeaLogoSvg
+        if (url.includes("nykredit")) return nykreditLogoSvg
+    }
+
     const handleViewChange = (newView: "Afdelinger" | "Aarhus" | "Aalborg" | "København" | "Esbjerg" | "Odense") => {
         if (newView == view) return null
 
@@ -338,7 +349,7 @@ export const App = () => {
 
     return (
         <Box sx={{ display: "flex" }}>
-            <AppBar position="fixed" sx={{ zIndex: theme => theme.zIndex.drawer + 1, bgcolor: "#00005e" }}>
+            <AppBar position="fixed" sx={{ zIndex: theme => theme.zIndex.drawer + 1, bgcolor: getBrandColor() }}>
                 <Toolbar>
                     <Stack direction="row" flexGrow={1} alignItems="center" justifyContent="space-between">
                         <Stack direction="row" alignItems="center">
@@ -374,7 +385,7 @@ export const App = () => {
                         </Stack>
                         <Stack direction="row" alignItems="center" justifyContent="center" p={2} mb={1}>
                             <Box>
-                                <img src={logoSvg} />
+                                <img src={getBrandLogo()} />
                             </Box>
                         </Stack>
                     </Stack>
