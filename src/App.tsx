@@ -319,7 +319,7 @@ const rowsOfDepartments: TDataStructure[] = [
     },
 ]
 
-const drawerWidth = 240
+// const drawerWidth = 240
 
 export const App = () => {
     const [view, setView] = useState<"Afdelinger" | "Aarhus" | "Aalborg" | "København" | "Esbjerg" | "Odense">("Afdelinger")
@@ -468,6 +468,7 @@ export const App = () => {
         </Box>
     )
 }
+
 
 
 
